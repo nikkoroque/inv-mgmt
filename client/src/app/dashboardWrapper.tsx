@@ -1,21 +1,39 @@
 // "use client" directive is required when using client-side rendering for Next.js
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "@/app/shared/(components)/Navbar"; // Importing the Navbar component
 import Sidebar from "@/app/shared/(components)/Sidebar"; // Importing the Sidebar component
-import StoreProvider from "@/app/redux"; // Importing the Redux store provider to wrap the app with Redux state
+import StoreProvider, { useAppSelector } from "@/app/redux"; // Importing the Redux store provider to wrap the app with Redux state
 
 // DashboardLayout component defines the layout structure for the dashboard
 // It includes a sidebar, a navbar, and a main content area where the `children` will be rendered
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const isSidebarCollapsed = useAppSelector(
+    (state) => state.global.isSidebarCollapsed
+  );
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.add("light");
+    }
+  });
   return (
-    <div className={`light flex bg-gray-50 text-gray-900 w-full min-h-screen`}>
+    <div
+      className={`${
+        isDarkMode ? "dark" : "light"
+      } flex bg-gray-50 text-gray-900 w-full min-h-screen`}
+    >
       {/* Sidebar component is displayed on the left */}
       <Sidebar />
       {/* Main content area with Navbar and children */}
       <main
-        className={`flex flex-col w-full h-full py-7 px-9 bg-gray-50 md:pl-24`}
+        className={`flex flex-col w-full h-full py-7 px-9 bg-gray-50 ${
+          isSidebarCollapsed ? "md:pl-24" : "md:pl-72"
+        }`}
       >
         {/* Navbar component */}
         <Navbar />

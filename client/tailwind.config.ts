@@ -51,7 +51,7 @@ const themes = {
   },
   dark: {
     ...darkTheme,
-    white: colors.gray["950"],
+    white: colors.gray["900"],
     black: colors.gray["50"],
   },
 };
