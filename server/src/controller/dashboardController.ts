@@ -8,42 +8,20 @@ export const getDashboardMetrics = async (
   res: Response
 ): Promise<void> => {
   try {
-    const popularProducts = await prisma.products.findMany({
-      take: 15, // Grab 15 products
-      orderBy: {
-        stockQuantity: "desc",
-      },
-    });
-
-    const salesSummary = await prisma.salesSummary.findMany({
+    const expenseSummary = await prisma.expense_summary.findMany({
       take: 5,
       orderBy: {
         date: "desc",
       },
     });
 
-    const purchaseSummary = await prisma.purchaseSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: "desc",
-      },
-    });
-
-    const expenseSummary = await prisma.expenseSummary.findMany({
-      take: 5,
-      orderBy: {
-        date: "desc",
-      },
-    });
-
-    const expenseByCategorySummaryRaw = await prisma.expenseByCategory.findMany(
-      {
+    const expenseByCategorySummaryRaw =
+      await prisma.expense_by_category.findMany({
         take: 5,
         orderBy: {
           date: "desc",
         },
-      }
-    );
+      });
 
     const expenseByCategorySummary = expenseByCategorySummaryRaw.map(
       (item) => ({
@@ -51,6 +29,27 @@ export const getDashboardMetrics = async (
         amount: item.amount.toString(),
       })
     );
+
+    const popularProducts = await prisma.items.findMany({
+      take: 50,
+      orderBy: {
+        item_id: "desc",
+      },
+    });
+
+    const salesSummary = await prisma.sales_summary.findMany({
+      take: 5,
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    const purchaseSummary = await prisma.purchase_summary.findMany({
+      take: 5,
+      orderBy: {
+        date: "desc",
+      },
+    });
 
     res.json({
       popularProducts,
@@ -60,6 +59,8 @@ export const getDashboardMetrics = async (
       expenseByCategorySummary,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving dashbord metrics." });
+    res
+      .status(500)
+      .json({ message: `${error} : Error retrieving dashbord metrics.` });
   }
 };

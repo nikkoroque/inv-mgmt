@@ -1,0 +1,21 @@
+// FOR FUTURE FOR USER CREATION
+async function createCustomerAndUser(data) {
+  const customer = await prisma.customers.create({
+    data: {
+      customer_name: data.customer_name,
+      email: data.email,
+      address: data.address,
+    },
+  });
+
+  // Automatically create a user when a customer is created
+  await prisma.users.create({
+    data: {
+      userId: generateUUID(),
+      name: data.customer_name,
+      email: data.email,
+    },
+  });
+
+  return customer;
+}

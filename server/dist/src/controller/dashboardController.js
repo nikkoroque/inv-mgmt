@@ -14,37 +14,37 @@ const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getDashboardMetrics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const popularProducts = yield prisma.products.findMany({
-            take: 15, // Grab 15 products
-            orderBy: {
-                stockQuantity: "desc",
-            },
-        });
-        const salesSummary = yield prisma.salesSummary.findMany({
+        const expenseSummary = yield prisma.expense_summary.findMany({
             take: 5,
             orderBy: {
                 date: "desc",
             },
         });
-        const purchaseSummary = yield prisma.purchaseSummary.findMany({
-            take: 5,
-            orderBy: {
-                date: "desc",
-            },
-        });
-        const expenseSummary = yield prisma.expenseSummary.findMany({
-            take: 5,
-            orderBy: {
-                date: "desc",
-            },
-        });
-        const expenseByCategorySummaryRaw = yield prisma.expenseByCategory.findMany({
+        const expenseByCategorySummaryRaw = yield prisma.expense_by_category.findMany({
             take: 5,
             orderBy: {
                 date: "desc",
             },
         });
         const expenseByCategorySummary = expenseByCategorySummaryRaw.map((item) => (Object.assign(Object.assign({}, item), { amount: item.amount.toString() })));
+        const popularProducts = yield prisma.items.findMany({
+            take: 50,
+            orderBy: {
+                item_id: "desc",
+            },
+        });
+        const salesSummary = yield prisma.sales_summary.findMany({
+            take: 5,
+            orderBy: {
+                date: "desc",
+            },
+        });
+        const purchaseSummary = yield prisma.purchase_summary.findMany({
+            take: 5,
+            orderBy: {
+                date: "desc",
+            },
+        });
         res.json({
             popularProducts,
             salesSummary,
@@ -54,7 +54,9 @@ const getDashboardMetrics = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({ message: "Error retrieving dashbord metrics." });
+        res
+            .status(500)
+            .json({ message: `${error} : Error retrieving dashbord metrics.` });
     }
 });
 exports.getDashboardMetrics = getDashboardMetrics;

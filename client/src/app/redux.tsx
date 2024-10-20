@@ -7,7 +7,7 @@ import {
   Provider,
 } from "react-redux";
 import globalReducer from "@/state";
-import { api } from "@/state/api";
+import { api } from "@/app/views/dashboard/api/api";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
 // Import for Redux Persist, which allows the Redux store to persist across sessions.
@@ -30,13 +30,16 @@ import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 // This prevents issues during server-side rendering (SSR) where window is not available.
 const createNoopStorage = () => {
   return {
-    getItem(_key: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getItem(_key: string): Promise<string | null> {
       return Promise.resolve(null);
     },
-    setItem(_key: any, value: any) {
-      return Promise.resolve(value);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setItem(_key: string, _value: string): Promise<void> {
+      return Promise.resolve();
     },
-    removeItem(_key: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    removeItem(_key: string): Promise<void> {
       return Promise.resolve();
     },
   };
