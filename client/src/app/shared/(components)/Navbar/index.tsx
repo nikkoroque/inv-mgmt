@@ -8,8 +8,6 @@ import ProfileImage from "@/data/assets/images/48410720.png";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
 
-type Props = {};
-
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const isSidebarCollapsed = useAppSelector(

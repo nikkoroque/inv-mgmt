@@ -16,7 +16,11 @@ import {
   ChevronRight,
   PencilRuler,
   CircleDollarSign,
-  SquareKanban, // Icon for showing dropdown status
+  SquareKanban,
+  CircleStop,
+  Gem,
+  LocateFixed,
+  Combine, // Icon for showing dropdown status
 } from "lucide-react"; // Icon imports
 import Link from "next/link"; // Next.js link component for navigation
 import { usePathname } from "next/navigation"; // Hook for getting the current path
@@ -150,7 +154,7 @@ const Sidebar = () => {
       <div className="flex-grow mt-8">
         {/* Dashboard link */}
         <SidebarLink
-          href="/dashboard"
+          href="/"
           icon={Layout}
           label="Dashboard"
           isCollapsed={isSidebarCollapsed}
@@ -168,15 +172,45 @@ const Sidebar = () => {
             isCollapsed={isSidebarCollapsed}
           />
           <SidebarLink
-            href="/products"
+            href="/items"
             icon={Clipboard}
-            label="Products"
+            label="Item Master"
+            isCollapsed={isSidebarCollapsed}
+          />
+          <SidebarLink
+            href="/jewelry"
+            icon={CircleStop}
+            label="Jewelry"
+            isCollapsed={isSidebarCollapsed}
+          />
+          <SidebarLink
+            href="/diamonds"
+            icon={Gem}
+            label="Diamonds"
             isCollapsed={isSidebarCollapsed}
           />
           <SidebarLink
             href="/profiling"
             icon={PencilRuler}
             label="Profiling"
+            isCollapsed={isSidebarCollapsed}
+          />
+        </SidebarDropdown>
+        {/* Inventory Management dropdown */}
+        <SidebarDropdown
+          label="Warehouse Management"
+          isCollapsed={isSidebarCollapsed}
+        >
+          <SidebarLink
+            href="/locations"
+            icon={LocateFixed}
+            label="Locations"
+            isCollapsed={isSidebarCollapsed}
+          />
+          <SidebarLink
+            href="/storage-types"
+            icon={Combine}
+            label="Storage Types"
             isCollapsed={isSidebarCollapsed}
           />
         </SidebarDropdown>

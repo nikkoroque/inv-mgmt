@@ -13,75 +13,214 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  userId String @id
-  name   String
-  email  String
+// Users Table
+model users {
+  userId    String      @id
+  name      String
+  email     String      @unique
+  Customers customers[]
 }
 
-model Products {
-  productId     String      @id
-  name          String
-  price         Float
-  rating        Float?
-  stockQuantity Int
-  Sales         Sales[]
-  Purchases     Purchases[]
-}
-
-model Sales {
-  saleId      String   @id
-  productId   String
-  timestamp   DateTime
-  quantity    Int
-  unitPrice   Float
-  totalAmount Float
-  product     Products @relation(fields: [productId], references: [productId])
-}
-
-model Purchases {
-  purchaseId String   @id
-  productId  String
-  timestamp  DateTime
-  quantity   Int
-  unitCost   Float
-  totalCost  Float
-  product    Products @relation(fields: [productId], references: [productId])
-}
-
-model Expenses {
-  expenseId String   @id
-  category  String
-  amount    Float
-  timestamp DateTime
-}
-
-model SalesSummary {
-  salesSummaryId   String   @id
-  totalValue       Float
-  changePercentage Float?
-  date             DateTime
-}
-
-model PurchaseSummary {
-  purchaseSummaryId String   @id
-  totalPurchased    Float
-  changePercentage  Float?
+model sales_summary {
+  sales_summaryId   String   @id
+  total_value       Float
+  change_percentage Float?
   date              DateTime
 }
 
-model ExpenseSummary {
-  expenseSummaryId  String              @id
-  totalExpenses     Float
-  date              DateTime
-  ExpenseByCategory ExpenseByCategory[]
+model purchase_summary {
+  purchase_summaryId String   @id
+  total_purchased    Float
+  change_percentage  Float?
+  date               DateTime
 }
 
-model ExpenseByCategory {
-  expenseByCategoryId String         @id
-  expenseSummaryId    String
-  category            String
-  amount              BigInt
+model expense_summary {
+  expense_summaryId   String                @id
+  total_expenses      Float
   date                DateTime
-  expenseSummary      ExpenseSummary @relation(fields: [expenseSummaryId], references: [expenseSummaryId])
+  expense_by_category expense_by_category[]
 }
+
+model expense_by_category {
+  expense_by_categoryId String          @id
+  expense_summaryId     String
+  category              String
+  amount                BigInt
+  date                  DateTime
+  expense_summary       expense_summary @relation(fields: [expense_summaryId], references: [expense_summaryId])
+}
+
+// Item Master Table
+model items {
+  item_id        Int         @id @default(autoincrement())
+  sku            String      @unique
+  name           String
+  description    String?
+  category       String
+  subcategory    String?
+  material       String?
+  weight         Float?
+  vendor_id      Int?
+  vendor         vendors?    @relation(fields: [vendor_id], references: [vendor_id])
+  storage_type   String?
+  stock_quantity Int         @default(0)
+  low_stock_qty  Int         @default(0)
+  item_image     String?
+  price          Float
+  cost_price     Float
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  Diamonds       diamonds[]
+  Jewelry        jewelry[]
+  Sales          sales[]
+  Inventory      inventory[]
+}
+
+// Diamonds Table
+model diamonds {
+  diamond_id    Int     @id @default(autoincrement())
+  item_id       Int
+  item          items   @relation(fields: [item_id], references: [item_id])
+  carat_weight  Float
+  clarity       String?
+  color         String?
+  cut           String?
+  fluorescence  String?
+  origin        String?
+  certification String?
+}
+
+// Jewelry Table
+model jewelry {
+  jewelry_id     Int     @id @default(autoincrement())
+  item_id        Int
+  item           items   @relation(fields: [item_id], references: [item_id])
+  metal_type     String?
+  gemstone_type  String?
+  total_weight   Float?
+  num_diamonds   Int?
+  diamond_weight Float?
+  setting_type   String?
+}
+
+// Vendor Table
+model vendors {
+  vendor_id      Int     @id @default(autoincrement())
+  vendor_name    String
+  contact_person String?
+  contact_number String?
+  email          String?
+  address        String?
+  items          items[]
+}
+
+// Sales Table
+model sales {
+  sale_id     Int       @id @default(autoincrement())
+  item_id     Int
+  item        items     @relation(fields: [item_id], references: [item_id])
+  sale_date   DateTime  @default(now())
+  quantity    Int
+  sale_price  Float
+  customer_id Int
+  customer    customers @relation(fields: [customer_id], references: [customer_id])
+}
+
+// Inventory Table
+model inventory {
+  inventory_id   Int      @id @default(autoincrement())
+  item_id        Int
+  item           items    @relation(fields: [item_id], references: [item_id])
+  stock_quantity Int      @default(0)
+  zone           String?
+  aisle          String?
+  bay            String?
+  level          String?
+  position       String?
+  last_updated   DateTime @default(now()) @updatedAt
+}
+
+// Customers Table
+model customers {
+  customer_id    Int     @id @default(autoincrement())
+  customer_name  String
+  contact_number String?
+  email          String  @unique
+  address        String?
+  Sales          sales[]
+  Users          users?  @relation(fields: [email], references: [email])
+}
+
+// Storage Types Table
+model storage_types {
+  storage_type_id Int    @id @default(autoincrement())
+  type_name       String
+}
+
+// model Products {
+//   productId     String      @id
+//   name          String
+//   price         Float
+//   rating        Float?
+//   stockQuantity Int
+//   Sales         Sales[]
+//   Purchases     Purchases[]
+// }
+
+// model Sales {
+//   saleId      String   @id
+//   productId   String
+//   timestamp   DateTime
+//   quantity    Int
+//   unitPrice   Float
+//   totalAmount Float
+//   product     products @relation(fields: [productId], references: [productId])
+// }
+
+// model Purchases {
+//   purchaseId String   @id
+//   productId  String
+//   timestamp  DateTime
+//   quantity   Int
+//   unitCost   Float
+//   totalCost  Float
+//   product    products @relation(fields: [productId], references: [productId])
+// }
+
+// model Expenses {
+//   expenseId String   @id
+//   category  String
+//   amount    Float
+//   timestamp DateTime
+// }
+
+// model SalesSummary {
+//   salesSummaryId   String   @id
+//   totalValue       Float
+//   changePercentage Float?
+//   date             DateTime
+// }
+
+// model PurchaseSummary {
+//   purchaseSummaryId String   @id
+//   totalPurchased    Float
+//   changePercentage  Float?
+//   date              DateTime
+// }
+
+// model ExpenseSummary {
+//   expenseSummaryId  String              @id
+//   totalExpenses     Float
+//   date              DateTime
+//   ExpenseByCategory ExpenseByCategory[]
+// }
+
+// model ExpenseByCategory {
+//   expenseByCategoryId String         @id
+//   expenseSummaryId    String
+//   category            String
+//   amount              BigInt
+//   date                DateTime
+//   expenseSummary      ExpenseSummary @relation(fields: [expenseSummaryId], references: [expenseSummaryId])
+// }
